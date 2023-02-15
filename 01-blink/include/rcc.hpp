@@ -26,7 +26,7 @@ public:
   }
 
   void hse_clock_disable() {
-    *address ^= (1 << 16);
+    *address &= ~(1 << 16);
     while (!hse_clock_ready()) {
       ;
     }
@@ -53,7 +53,7 @@ public:
 
   enum class pllsrc { hsi2 = 0, hse_prediv = 1 };
 
-  void set_pll_src_hsi2() { *address ^= (1 << 16); }
+  void set_pll_src_hsi2() { *address &= ~(1 << 16); }
 
   void set_pll_src_hseprediv() { *address |= (1 << 16); }
 
