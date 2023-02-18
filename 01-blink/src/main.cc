@@ -30,10 +30,9 @@ void board_clocking_init() {
 void board_gpio_init() {
   mcal::rcc::ahbenr rcc_ahbenr;
   mcal::gpioc::moder gpioc_moder;
-  mcal::gpioc::typer gpioc_typer;
   rcc_ahbenr.enable_gpioc_clocking();
   gpioc_moder.conf_pc8_mode();
-  gpioc_typer.conf_pc8_type();
+  gpioc_moder.conf_pc9_mode();
 }
 
 
@@ -54,9 +53,12 @@ int main() {
 
     mcal::gpioc::odr gpioc_odr;
     for (;;) {
-        gpioc_odr.enable();
+        gpioc_odr.enable_pc8();
         blink::delay_3000_1000ms();
-        gpioc_odr.disable();
+        gpioc_odr.disable_pc8();
+        gpioc_odr.enable_pc9();
+        blink::delay_3000_1000ms();
+        gpioc_odr.disable_pc9();
         blink::delay_3000_1000ms();
     }
 }

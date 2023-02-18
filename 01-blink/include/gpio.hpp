@@ -17,15 +17,8 @@ class moder final {
 
 public:
   void conf_pc8_mode() { *address() |= (1U << 16); }
-};
 
-class typer final {
-  static auto address() {
-    return reinterpret_cast<volatile uint32_t *>(0x48000804);
-  }
-
-public:
-  void conf_pc8_type() { *address() |= (0b0U << 8); }
+  void conf_pc9_mode() { *address() |= (1U << 18); }
 };
 
 class odr final {
@@ -34,9 +27,12 @@ class odr final {
   }
 
 public:
-  void enable() { *address() |= 0x100U; }
-
-  void disable() { *address() &= ~0x100U; }
+  // blue led
+  void enable_pc8() { *address() |= (0x1U << 8); }
+  void disable_pc8() { *address() &= ~(0x1U << 8); }
+  // green led
+  void enable_pc9() { *address() |= (0x1U << 9); }
+  void disable_pc9() { *address() &= ~(0x1U << 9); }
 };
 
 } // namespace gpioc
