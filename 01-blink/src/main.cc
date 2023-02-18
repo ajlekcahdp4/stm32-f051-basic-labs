@@ -50,16 +50,13 @@ void delay_3000_1000ms()
 } // namespace blink
 
 int main() {
-#ifndef INSIDE_QEMU
-    blink::board_clocking_init();
-#endif
-  blink::board_gpio_init();
+    blink::board_gpio_init();
 
-  mcal::gpioc::odr gpioc_odr;
-  for (;;) {
-    gpioc_odr.enable();
-    blink::delay_3000_1000ms();
-    gpioc_odr.disable();
-    blink::delay_3000_1000ms();
-  }
+    mcal::gpioc::odr gpioc_odr;
+    for (;;) {
+        gpioc_odr.enable();
+        blink::delay_3000_1000ms();
+        gpioc_odr.disable();
+        blink::delay_3000_1000ms();
+    }
 }
