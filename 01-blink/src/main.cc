@@ -1,10 +1,13 @@
 #include "gpio.hpp"
 #include "rcc.hpp"
 
-#include <chrono>
 #include <cstdint>
-#include <iostream>
-#include <thread>
+#include <unistd.h>
+
+
+#define CPU_FREQENCY 48000000U // CPU frequency: 48 MHz
+#define ONE_MILLISECOND CPU_FREQENCY/1000U
+
 
 namespace blink {
 
@@ -33,19 +36,30 @@ void board_gpio_init() {
   gpioc_typer.conf_pc8_type();
 }
 
+
+void delay_3000_1000ms()
+{
+    for (uint32_t i = 0; i < 1000U * ONE_MILLISECOND; ++i)
+    {
+        // Insert NOP for power consumption:
+        __asm__ volatile("nop");
+    }
+}
+
+
 } // namespace blink
 
 int main() {
 #ifndef INSIDE_QEMU
-  blink::board_clocking_init();
+    blink::board_clocking_init();
 #endif
   blink::board_gpio_init();
 
   mcal::gpioc::odr gpioc_odr;
   for (;;) {
     gpioc_odr.enable();
-    std::this_thread::sleep_for(3000ms);
+    blink::delay_3000_1000ms();
     gpioc_odr.disable();
-    std::this_thread::sleep_for(3000ms);
+    blink::delay_3000_1000ms();
   }
 }

@@ -1,14 +1,12 @@
 
 cmake_minimum_required(VERSION 3.16)
 
-project(01-blink C ASM CXX)
-
 set(PROJECT_SOURCES
     src/main.cc
 )
 
 add_executable(01-blink ${PROJECT_SOURCES})
-add_dependencies(01-blink stm32JL)
+target_include_directories(01-blink PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(01-blink CMSIS::STM32::F051R8 )
 stm32_print_size_of_target(01-blink)
 stm32_generate_binary_file(01-blink)
