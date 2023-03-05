@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace mcal {
 
@@ -16,9 +16,9 @@ class moder final {
   }
 
 public:
-  void conf_pc8_mode() { *address() |= (1U << 16); }
+  static void conf_pc8_mode() { *address() |= (1U << 16); }
 
-  void conf_pc9_mode() { *address() |= (1U << 18); }
+  static void conf_pc9_mode() { *address() |= (1U << 18); }
 };
 
 class odr final {
@@ -28,11 +28,11 @@ class odr final {
 
 public:
   // blue led
-  void enable_pc8() { *address() |= (0x1U << 8); }
-  void disable_pc8() { *address() &= ~(0x1U << 8); }
+  static void enable_pc8() { *address() |= (0x1U << 8); }
+  static void disable_pc8() { *address() &= ~(0x1U << 8); }
   // green led
-  void enable_pc9() { *address() |= (0x1U << 9); }
-  void disable_pc9() { *address() &= ~(0x1U << 9); }
+  static void enable_pc9() { *address() |= (0x1U << 9); }
+  static void disable_pc9() { *address() &= ~(0x1U << 9); }
 };
 
 } // namespace gpioc

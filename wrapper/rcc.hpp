@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <cstdint>
+#include <stdint.h>
 
 namespace mcal {
 
@@ -17,32 +17,30 @@ class cr final {
   }
 
 public:
-  cr() { *address() = 0x0; }
-
-  void hse_clock_enable() {
+  static void hse_clock_enable() {
     *address() |= (1 << 16);
     while (!hse_clock_ready()) {
       ;
     }
   }
 
-  void hse_clock_disable() {
+  static void hse_clock_disable() {
     *address() &= ~(1 << 16);
     while (!hse_clock_ready()) {
       ;
     }
   }
 
-  bool hse_clock_ready() { return *address() & (1 << 17); }
+  static bool hse_clock_ready() { return *address() & (1 << 17); }
 
-  void enable_pll() {
+  static void enable_pll() {
     *address() |= (1U << 24);
     while (!pll_ready()) {
       ;
     }
   }
 
-  bool pll_ready() { return *address() & (1U << 25); }
+  static bool pll_ready() { return *address() & (1U << 25); }
 };
 
 class cfgr final {
@@ -51,15 +49,13 @@ class cfgr final {
   }
 
 public:
-  cfgr() { *address() = 0x0; }
-
   enum class pllsrc { hsi2 = 0, hse_prediv = 1 };
 
-  void set_pll_src_hsi2() { *address() &= ~(1 << 16); }
+  static void set_pll_src_hsi2() { *address() &= ~(1 << 16); }
 
-  void set_pll_src_hseprediv() { *address() |= (1 << 16); }
+  static void set_pll_src_hseprediv() { *address() |= (1 << 16); }
 
-  void set_pll_mul(const unsigned x) {
+  static void set_pll_mul(const unsigned x) {
     unsigned val = x;
     if (x > 16)
       val = 16;
@@ -68,11 +64,11 @@ public:
 
   enum class sysclk : unsigned { hsi = 0, hse = 1, pll = 2, hsi48 = 3 };
 
-  void set_sysclk_source(const sysclk src) {
+  static void set_sysclk_source(const sysclk src) {
     *address() |= (unsigned(src) << 1);
   }
 
-  sysclk switch_status() { return sysclk((*address() & 0b1100) >> 2); }
+  static sysclk switch_status() { return sysclk((*address() & 0b1100) >> 2); }
 };
 
 class cfgr2 final {
@@ -81,7 +77,7 @@ class cfgr2 final {
   }
 
 public:
-  void set_prediv_2() { *address() |= 1U; }
+  static void set_prediv_2() { *address() |= 1U; }
 };
 
 class ahbenr final {
@@ -90,7 +86,7 @@ class ahbenr final {
   }
 
 public:
-  void enable_gpioc_clocking() { *address() |= (1U << 19); }
+  static void enable_gpioc_clocking() { *address() |= (1U << 19); }
 };
 
 } // namespace rcc

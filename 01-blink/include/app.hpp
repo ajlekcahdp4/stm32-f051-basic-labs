@@ -45,14 +45,13 @@ public:
 
   void run_loop() {
     board_gpio_init();
-    mcal::gpioc::odr gpioc_odr;
     for (;;) {
-      gpioc_odr.enable_pc8();
+      mcal::gpioc::odr::enable_pc8();
       delay_3000_1000ms();
-      gpioc_odr.disable_pc8();
-      gpioc_odr.enable_pc9();
+      mcal::gpioc::odr::disable_pc8();
+      mcal::gpioc::odr::enable_pc9();
       delay_3000_1000ms();
-      gpioc_odr.disable_pc9();
+      mcal::gpioc::odr::disable_pc9();
     }
   }
 };
