@@ -28,27 +28,21 @@ class application final {
   static constexpr unsigned tacts_pre_one_us = cpu_frequency / 1000000U;
 
   void board_clocking_init() {
-    mcal::rcc::cr rcc_cr;
-    mcal::rcc::cfgr2 rcc_cfgr2;
-    mcal::rcc::cfgr rcc_cfgr;
-
-    rcc_cr.hse_clock_enable();
-    rcc_cfgr2.set_prediv_2();
-    rcc_cfgr.set_pll_src_hseprediv();
-    rcc_cfgr.set_pll_mul(12);
-    rcc_cr.enable_pll();
-    rcc_cfgr.set_sysclk_source(mcal::rcc::cfgr::sysclk::pll);
-    while (rcc_cfgr.switch_status() != mcal::rcc::cfgr::sysclk::pll) {
+    mcal::rcc::cr::hse_clock_enable();
+    mcal::rcc::cfgr2::set_prediv_2();
+    mcal::rcc::cfgr::set_pll_src_hseprediv();
+    mcal::rcc::cfgr::set_pll_mul(12);
+    mcal::rcc::cr::enable_pll();
+    mcal::rcc::cfgr::set_sysclk_source(mcal::rcc::cfgr::sysclk::pll);
+    while (mcal::rcc::cfgr::switch_status() != mcal::rcc::cfgr::sysclk::pll) {
       ;
     }
   }
 
   void board_gpio_init() {
-    mcal::rcc::ahbenr rcc_ahbenr;
-    mcal::gpioc::moder gpioc_moder;
-    rcc_ahbenr.enable_gpioc_clocking();
-    gpioc_moder.conf_pc8_mode();
-    gpioc_moder.conf_pc9_mode();
+    mcal::rcc::ahbenr::enable_gpioc_clocking();
+    mcal::gpioc::moder::conf_pc8_mode();
+    mcal::gpioc::moder::conf_pc9_mode();
   }
 
 public:

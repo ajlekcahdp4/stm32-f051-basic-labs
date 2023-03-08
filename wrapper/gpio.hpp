@@ -10,30 +10,41 @@ namespace mcal {
 
 namespace gpioc {
 
-class moder final {
-  static auto address() {
-    return reinterpret_cast<volatile uint32_t *>(0x48000800);
-  }
+namespace moder {
+inline auto addr() {
+  return reinterpret_cast<uint32_t volatile *>(0x48000800);
+}
 
-public:
-  static void conf_pc8_mode() { *address() |= (1U << 16); }
+inline void conf_pc8_mode() {
+  *addr() |= (1U << 16);
+}
 
-  static void conf_pc9_mode() { *address() |= (1U << 18); }
-};
+inline void conf_pc9_mode() {
+  *addr() |= (1U << 18);
+}
+}; // namespace moder
 
-class odr final {
-  static auto address() {
-    return reinterpret_cast<volatile uint32_t *>(0x48000814);
-  }
+namespace odr {
 
-public:
+inline auto addr() {
+  return reinterpret_cast<uint32_t volatile *>(0x48000814);
+}
+
   // blue led
-  static void enable_pc8() { *address() |= (0x1U << 8); }
-  static void disable_pc8() { *address() &= ~(0x1U << 8); }
+inline void enable_pc8() {
+  *addr() |= (0x1U << 8);
+}
+inline void disable_pc8() {
+  *addr() &= ~(0x1U << 8);
+}
   // green led
-  static void enable_pc9() { *address() |= (0x1U << 9); }
-  static void disable_pc9() { *address() &= ~(0x1U << 9); }
-};
+inline void enable_pc9() {
+  *addr() |= (0x1U << 9);
+}
+inline void disable_pc9() {
+  *addr() &= ~(0x1U << 9);
+}
+}; // namespace odr
 
 } // namespace gpioc
 
