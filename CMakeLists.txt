@@ -16,3 +16,4 @@ add_compile_options(-Wall -Wextra -fno-rtti -fno-exceptions)
 add_link_options(-fno-rtti -fno-exceptions)
 
 add_subdirectory(01-blink)
+add_subdirectory(03-delay)
