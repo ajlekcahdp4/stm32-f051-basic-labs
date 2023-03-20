@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gpio.hpp"
+#include "gpioc.hpp"
 #include "rcc.hpp"
 
 namespace app_blink {

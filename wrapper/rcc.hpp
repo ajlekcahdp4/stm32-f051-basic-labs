@@ -18,7 +18,7 @@ inline auto addr() {
 }
 
 inline bool hse_clock_ready() {
-  return *addr() & (1 << 17);
+  return (*addr() & (1 << 17)) == (1 << 17);
 }
 
 inline void hse_clock_enable() {
@@ -36,7 +36,7 @@ inline void hse_clock_disable() {
 }
 
 inline bool pll_ready() {
-  return *addr() & (1U << 25);
+  return (*addr() & (1U << 25)) == (1U << 25);
 }
 
 inline void enable_pll() {
@@ -67,8 +67,12 @@ inline void set_pll_src_hseprediv() {
 
 inline void set_pll_mul(const unsigned x) {
   unsigned val = x;
-  if (x > 16) val = 16;
-  *addr() |= ((val - 2U) << 18);
+  if (x > 15) val = 15;
+  *addr() |= ((val - 1U) << 18);
+}
+
+inline void conf_ahb_48_mhz() {
+  *addr() |= 0b000U << 4;
 }
 
 enum class sysclk : unsigned {
@@ -79,7 +83,7 @@ enum class sysclk : unsigned {
 };
 
 inline void set_sysclk_source(const sysclk src) {
-  *addr() |= (unsigned(src) << 1);
+  *addr() |= (unsigned(src));
 }
 
 inline sysclk switch_status() {
@@ -100,6 +104,10 @@ inline void set_prediv_2() {
 namespace ahbenr {
 inline auto addr() {
   return reinterpret_cast<uint32_t volatile *>(0x40021014);
+}
+
+inline void conf_pa0_pa12_output() {
+  *addr() |= (1U << 17);
 }
 
 inline void enable_gpioc_clocking() {

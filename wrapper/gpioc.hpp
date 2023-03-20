@@ -1,5 +1,5 @@
 //----------------
-// GPIO Registers
+// GPIOC Registers
 //----------------
 
 #pragma once
@@ -30,14 +30,14 @@ inline auto addr() {
   return reinterpret_cast<uint32_t volatile *>(0x48000814);
 }
 
-  // blue led
+// blue led
 inline void enable_pc8() {
   *addr() |= (0x1U << 8);
 }
 inline void disable_pc8() {
   *addr() &= ~(0x1U << 8);
 }
-  // green led
+// green led
 inline void enable_pc9() {
   *addr() |= (0x1U << 9);
 }
