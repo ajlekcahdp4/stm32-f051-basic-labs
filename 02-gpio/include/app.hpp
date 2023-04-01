@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gpioa.hpp"
+#include "gpiob.hpp"
 #include "gpioc.hpp"
 #include "rcc.hpp"
 #include "sseg.hpp"
@@ -26,11 +27,16 @@ class application final {
   }
 
   void board_gpio_init() {
-    mcal::rcc::ahbenr::conf_pa0_pa12_output();
+    mcal::rcc::ahbenr::conf_a_output();
+    mcal::rcc::ahbenr::conf_b_output();
     mcal::gpioa::moder::conf_general_purpose_output();
+    mcal::gpiob::moder::conf_general_purpose_output();
     mcal::gpioa::typer::conf_push_pull();
+    mcal::gpiob::typer::conf_push_pull();
     *mcal::gpioa::moder::addr() |= 0U;
+    *mcal::gpiob::moder::addr() |= 0U;
     mcal::gpioa::pupdr::conf_pull_down();
+    mcal::gpiob::pupdr::conf_pull_down();
   }
 
   void delay_ms(uint32_t time) {
@@ -52,7 +58,7 @@ public:
         if (seg7.number < 9999) ++seg7.number;
       seg7.set_number_quater(tick);
       seg7.push_display_state();
-      delay_ms(1);
+      delay_ms(90);
     }
   }
 };

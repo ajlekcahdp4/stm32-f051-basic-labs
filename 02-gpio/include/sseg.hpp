@@ -17,7 +17,8 @@ enum pins {
   D1 = 1 << 8,
   D2 = 1 << 11,
   D3 = 1 << 7,
-  D4 = 1 << 0
+  D4 = 1 << 12,
+  NOISE = 1 << 14
 };
 
 inline unsigned operator|(ssegm::pins lhs, ssegm::pins rhs) {
@@ -39,14 +40,14 @@ static const unsigned digits[10] = {
 
 // clang-format off
 static const unsigned positions[4] = {
-  D1|D2|D3   , // 4
-  D1|D2   |D4, // 3
-  D1   |D3|D4, // 2
-     D2|D3|D4, // 1
+  D4,
+  D3,
+  D2,
+  D1
 };
 // clang-format on
 
-static const unsigned pins_used = A | B | C | D | E | F | G | DP | D1 | D2 | D3 | D4;
+static const unsigned pins_used = A | B | C | D | E | F | G | DP | D1 | D2 | D3 | D4 | NOISE;
 
 inline unsigned number_on_position(unsigned num, unsigned pos) {
   unsigned divisors[4] = {1, 10, 100, 1000};
@@ -69,7 +70,7 @@ public:
 
   void push_display_state() {
     auto prev_state = ~pins_used & *mcal::gpioa::odr::addr();
-    auto to_write = pins_used & display;
+    auto to_write = pins_used & (display | NOISE);
     *mcal::gpioa::odr::addr() = prev_state | to_write;
   }
 };

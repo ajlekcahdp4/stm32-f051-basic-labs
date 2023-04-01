@@ -106,8 +106,12 @@ inline auto addr() {
   return reinterpret_cast<uint32_t volatile *>(0x40021014);
 }
 
-inline void conf_pa0_pa12_output() {
+inline void conf_a_output() {
   *addr() |= (1U << 17);
+}
+
+inline void conf_b_output() {
+  *addr() |= (1U << 18);
 }
 
 inline void enable_gpioc_clocking() {
