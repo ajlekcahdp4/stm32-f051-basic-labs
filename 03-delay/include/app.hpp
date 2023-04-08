@@ -6,21 +6,11 @@
 namespace app_blink {
 
 extern "C" void delay_us(uint32_t time, uint32_t tacts_per_us) {
-  time *= tacts_per_us / 13U;
-  __asm__ volatile(R"(
-      movs r3, #0
-      str r3, [r7, #4]
-      b loop_action
-      loop_start:
-      ldr r3, [r7, #4]
-      add r3, #1
-      str r3, [r7, #4]
-      loop_action:
-      ldr r3, [r7, #4]
-      movs r2, r0
-      cmp r3, r2
-      bls loop_start
-  )");
+  time *= tacts_per_us;
+  for (uint32_t i = 0; i < time; ++i) {
+    // Insert NOP for power consumption:
+    __asm__ volatile("nop");
+  }
 }
 
 class application final {
@@ -52,10 +42,10 @@ public:
     board_gpio_init();
     for (;;) {
       mcal::gpioc::odr::enable_pc8();
-      delay_us(1000000, tacts_pre_one_us);
+      delay_us(100, tacts_pre_one_us);
       mcal::gpioc::odr::disable_pc8();
       mcal::gpioc::odr::enable_pc9();
-      delay_us(1000000, tacts_pre_one_us);
+      delay_us(100, tacts_pre_one_us);
       mcal::gpioc::odr::disable_pc9();
     }
   }
