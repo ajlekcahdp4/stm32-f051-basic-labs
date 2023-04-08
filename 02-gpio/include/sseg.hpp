@@ -57,21 +57,22 @@ inline unsigned number_on_position(unsigned num, unsigned pos) {
 
 class ss_display {
   uint32_t display = 0;
+  uint32_t quarter = 3;
 
 public:
   uint16_t number = 0;
 
-  void set_number_quater(unsigned tick) {
+  void set_number_quater() {
     unsigned divisors[4] = {1, 10, 100, 1000};
-    auto quarter = tick % 4;
-    auto divisor = divisors[quarter];
-    display = digits[(number / divisor) % 10] | positions[quarter];
+    auto divisor = divisors[quarter % 4];
+    display = digits[(number / divisor) % 10];
   }
 
   void push_display_state() {
     auto prev_state = ~pins_used & *mcal::gpioa::odr::addr();
-    auto to_write = pins_used & (display | NOISE);
+    auto to_write = pins_used & (display | positions[quarter]);
     *mcal::gpioa::odr::addr() = prev_state | to_write;
+    quarter = (quarter + 1) % 4;
   }
 };
 
