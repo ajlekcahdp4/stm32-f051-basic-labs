@@ -17,8 +17,7 @@ enum pins {
   D1 = 1 << 8,
   D2 = 1 << 11,
   D3 = 1 << 7,
-  D4 = 1 << 12,
-  NOISE = 1 << 14
+  D4 = 1 << 12
 };
 
 inline unsigned operator|(ssegm::pins lhs, ssegm::pins rhs) {
@@ -47,7 +46,7 @@ static const unsigned positions[4] = {
 };
 // clang-format on
 
-static const unsigned pins_used = A | B | C | D | E | F | G | DP | D1 | D2 | D3 | D4 | NOISE;
+static const unsigned pins_used = A | B | C | D | E | F | G | DP | D1 | D2 | D3 | D4;
 
 inline unsigned number_on_position(unsigned num, unsigned pos) {
   unsigned divisors[4] = {1, 10, 100, 1000};

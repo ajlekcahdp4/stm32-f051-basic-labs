@@ -6,8 +6,8 @@
 namespace noise {
 
 enum pins {
-  power = 1 << 13,
-  master = 1 << 14
+  power = 1 << 4,
+  master = 1 << 3
 };
 
 inline constexpr unsigned operator|(pins lhs, pins rhs) {
@@ -16,10 +16,16 @@ inline constexpr unsigned operator|(pins lhs, pins rhs) {
 
 constexpr unsigned pins_used = master | power;
 
-void emit_noise() {
-  auto prev_state = ~pins_used & *mcal::gpiob::odr::addr();
-  auto to_write = pins_used & (master | power);
-  *mcal::gpioa::odr::addr() = prev_state | to_write;
-}
+class noiser final {
+  unsigned status = 0;
+
+public:
+  void emit_noise() {
+    auto prev_state = ~pins_used & *mcal::gpiob::odr::addr();
+    auto to_write = pins_used & (power | status);
+    *mcal::gpiob::odr::addr() = prev_state | to_write;
+    status = status ? 0 : master;
+  }
+};
 
 } // namespace noise

@@ -3,6 +3,7 @@
 #include "gpioa.hpp"
 #include "gpiob.hpp"
 #include "gpioc.hpp"
+#include "noise.hpp"
 #include "rcc.hpp"
 #include "sseg.hpp"
 #include "utils.hpp"
@@ -15,15 +16,22 @@
 
 #define GET_CLOCK_ENR(word) ((volatile uint32_t *)((RCC_BASE) + 0x1C - GET_CLOCK_ENR_NUM(word) * 4))
 
+#define RCC_TIM3_EN BVB_(0x01) | (0x0UL)
 #define RCC_TIM2_EN BVB_(0x00) | (0x0UL)
 #define RCC_CLOCK_ON 0x1UL
 
 ssegm::ss_display seg7;
+noise::noiser nsr;
 
 extern "C" void TIM2_IRQHandler(void) {
   TIM2->SR &= ~TIM_SR_UIF;
   seg7.set_number_quater();
   seg7.push_display_state();
+}
+
+extern "C" void TIM3_IRQHandler(void) {
+  TIM3->SR &= ~TIM_SR_UIF;
+  nsr.emit_noise();
 }
 
 namespace app_ssegm {
@@ -54,10 +62,19 @@ class application final {
   void tim2_config(void) {
     NVIC_SetPriority(TIM2_IRQn, 1);
     NVIC_EnableIRQ(TIM2_IRQn);
-    rcc_clock_set(RCC_TIM2_EN, RCC_TIM2_EN);
+    rcc_clock_set(RCC_TIM2_EN, RCC_CLOCK_ON);
     TIM2->ARR = SystemCoreClock / 1000 * 5;
     TIM2->DIER |= TIM_DIER_UIE;
     TIM2->CR1 |= TIM_CR1_CEN;
+  }
+
+  void tim3_config(void) {
+    NVIC_SetPriority(TIM3_IRQn, 2);
+    NVIC_EnableIRQ(TIM3_IRQn);
+    rcc_clock_set(RCC_TIM3_EN, RCC_CLOCK_ON);
+    TIM3->ARR = SystemCoreClock / 1000 / 4;
+    TIM3->DIER |= TIM_DIER_UIE;
+    TIM3->CR1 |= TIM_CR1_CEN;
   }
 
   void board_gpio_init() {
@@ -86,6 +103,7 @@ public:
   void run_loop() {
     board_clocking_init();
     tim2_config();
+    tim3_config();
     board_gpio_init();
     for (unsigned tick = 0;; ++tick) {
       if (seg7.number < 9999) ++seg7.number;
