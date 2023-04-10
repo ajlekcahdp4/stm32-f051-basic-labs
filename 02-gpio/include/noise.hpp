@@ -20,9 +20,15 @@ class noiser final {
   unsigned status = 0;
 
 public:
+  noiser() {
+    auto prev_state = ~power & *mcal::gpiob::odr::addr();
+    auto to_write = power;
+    *mcal::gpiob::odr::addr() = prev_state | to_write;
+  }
+
   void emit_noise() {
-    auto prev_state = ~pins_used & *mcal::gpiob::odr::addr();
-    auto to_write = pins_used & (power | status);
+    auto prev_state = ~master & *mcal::gpiob::odr::addr();
+    auto to_write = master & status;
     *mcal::gpiob::odr::addr() = prev_state | to_write;
     status = status ? 0 : master;
   }

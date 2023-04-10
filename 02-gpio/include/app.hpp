@@ -59,7 +59,7 @@ class application final {
     }
   }
 
-  void tim2_config(void) {
+  void tim2_config() {
     NVIC_SetPriority(TIM2_IRQn, 1);
     NVIC_EnableIRQ(TIM2_IRQn);
     rcc_clock_set(RCC_TIM2_EN, RCC_CLOCK_ON);
@@ -68,11 +68,11 @@ class application final {
     TIM2->CR1 |= TIM_CR1_CEN;
   }
 
-  void tim3_config(void) {
+  void tim3_config(int dur) {
     NVIC_SetPriority(TIM3_IRQn, 2);
     NVIC_EnableIRQ(TIM3_IRQn);
     rcc_clock_set(RCC_TIM3_EN, RCC_CLOCK_ON);
-    TIM3->ARR = SystemCoreClock / 1000 / 4;
+    TIM3->ARR = SystemCoreClock / 10 / dur;
     TIM3->DIER |= TIM_DIER_UIE;
     TIM3->CR1 |= TIM_CR1_CEN;
   }
@@ -103,11 +103,12 @@ public:
   void run_loop() {
     board_clocking_init();
     tim2_config();
-    tim3_config();
+    tim3_config(1000);
     board_gpio_init();
     for (unsigned tick = 0;; ++tick) {
       if (seg7.number < 9999) ++seg7.number;
       seg7.set_number_quater();
+      if (tick % 10) tim3_config(tick);
       delay_ms(1000);
     }
   }
