@@ -1,30 +1,22 @@
 #pragma once
 
-#include "gpioc.hpp"
-#include "rcc.hpp"
+#include "stm32f051/gpioc.hpp"
+#include "stm32f051/rcc.hpp"
 
 namespace app_blink {
+
+using namespace stmcpp::stm32f051;
 
 class application final {
   static constexpr unsigned cpu_frequency = 48000000U;
   static constexpr unsigned one_millisecond = cpu_frequency / 100000U;
 
-  void board_clocking_init() {
-    mcal::rcc::cr::hse_clock_enable();
-    mcal::rcc::cfgr2::set_prediv_2();
-    mcal::rcc::cfgr::set_pll_src_hseprediv();
-    mcal::rcc::cfgr::set_pll_mul(12);
-    mcal::rcc::cr::enable_pll();
-    mcal::rcc::cfgr::set_sysclk_source(mcal::rcc::cfgr::sysclk::pll);
-    while (mcal::rcc::cfgr::switch_status() != mcal::rcc::cfgr::sysclk::pll) {
-      ;
-    }
-  }
+  void board_clocking_init() { mrcc::cr |= mrcc::cr_fields::hseon; }
 
   void board_gpio_init() {
-    mcal::rcc::ahbenr::enable_gpioc_clocking();
-    mcal::gpioc::moder::conf_pc8_mode();
-    mcal::gpioc::moder::conf_pc9_mode();
+    mrcc::ahbenr |= mrcc::ahbenr_fields::iopcen;
+    mgpioc::moder |= (mgpioc::moder_fields::moder0_output << (mgpioc::odr_fields::odr8.offset * 2));
+    mgpioc::moder |= (mgpioc::moder_fields::moder0_output << (mgpioc::odr_fields::odr9.offset * 2));
   }
 
   void delay_ms(uint32_t time) {
@@ -40,12 +32,12 @@ public:
   void run_loop() {
     board_gpio_init();
     for (;;) {
-      mcal::gpioc::odr::enable_pc8();
+      mgpioc::odr ^= mgpioc::odr_fields::odr8;
       delay_ms(1000);
-      mcal::gpioc::odr::disable_pc8();
-      mcal::gpioc::odr::enable_pc9();
+      mgpioc::odr ^= mgpioc::odr_fields::odr8;
+      mgpioc::odr ^= mgpioc::odr_fields::odr9;
       delay_ms(1000);
-      mcal::gpioc::odr::disable_pc9();
+      mgpioc::odr ^= mgpioc::odr_fields::odr9;
     }
   }
 };
