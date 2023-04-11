@@ -21,21 +21,6 @@ using moder_register = stmcpp::register_wrapper<0x48000000, 4, stmcpp::read_writ
 namespace moder_fields
 {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 
 constexpr auto moder0_input = stmcpp::register_field<moder_register, 0, 2>{0};
 
@@ -49,9 +34,6 @@ constexpr auto moder0_alternate = stmcpp::register_field<moder_register, 0, 2>{2
 constexpr auto moder0_analog = stmcpp::register_field<moder_register, 0, 2>{3};
 
 using moder0 = stmcpp::register_field<moder_register, 0, 2>;
-
-
-
 
 } // namespace moder_fields
 
@@ -334,13 +316,27 @@ constexpr auto odr0_low = stmcpp::register_field<odr_register, 0, 1>{0};
 
 using odr0 = stmcpp::register_field<odr_register, 0, 1>;
 
-
-
-
 } // namespace odr_fields
 
 constexpr auto odr = odr_register{};
 
+inline void configure_gen_purpose_output() {
+  moder |= (moder_fields::moder0_output << (odr_fields::odr1.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr2.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr3.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr4.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr5.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr6.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr7.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr8.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr9.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr10.offset * 2)) |
+      (moder_fields::moder0_output << (odr_fields::odr11.offset * 2)) |
+      (moder_fields::moder0_output << odr_fields::odr12.offset * 2) |
+      (moder_fields::moder0_output << odr_fields::odr13.offset * 2) |
+      (moder_fields::moder0_output << odr_fields::odr14.offset * 2) |
+      (moder_fields::moder0_output << odr_fields::odr15.offset * 2);
+}
 
 // 
 using bsrr_register = stmcpp::register_wrapper<0x48000018, 4, stmcpp::write_only_flag>;

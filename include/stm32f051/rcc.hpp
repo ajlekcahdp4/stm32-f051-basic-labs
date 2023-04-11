@@ -15,8 +15,8 @@
 namespace stmcpp::stm32f051::mrcc
 {
 
-// 
-using cr_register = stmcpp::register_wrapper<0x40021000, 4, readj-write>;
+//
+using cr_register = stmcpp::register_wrapper<0x40021000, 4, read_write_flag>;
 
 namespace cr_fields
 {
@@ -77,9 +77,8 @@ constexpr auto pllrdy = stmcpp::register_field<cr_register, 25, 1>{1};
 
 constexpr auto cr = cr_register{};
 
-
-// 
-using cfgr_register = stmcpp::register_wrapper<0x40021004, 4, readj-write>;
+//
+using cfgr_register = stmcpp::register_wrapper<0x40021004, 4, read_write_flag>;
 
 namespace cfgr_fields
 {
@@ -312,9 +311,8 @@ using pllnodiv = stmcpp::register_field<cfgr_register, 31, 1>;
 
 constexpr auto cfgr = cfgr_register{};
 
-
-// 
-using cir_register = stmcpp::register_wrapper<0x40021008, 4, readj-write>;
+//
+using cir_register = stmcpp::register_wrapper<0x40021008, 4, read_write_flag>;
 
 namespace cir_fields
 {
@@ -418,8 +416,7 @@ using cssc = stmcpp::register_field<cir_register, 23, 1>;
 
 constexpr auto cir = cir_register{};
 
-
-// 
+//
 using apb2rstr_register = stmcpp::register_wrapper<0x4002100c, 4, stmcpp::read_write_flag>;
 
 namespace apb2rstr_fields
@@ -470,8 +467,7 @@ constexpr auto usart7rst = stmcpp::register_field<apb2rstr_register, 6, 1>{1};
 
 constexpr auto apb2rstr = apb2rstr_register{};
 
-
-// 
+//
 using apb1rstr_register = stmcpp::register_wrapper<0x40021010, 4, stmcpp::read_write_flag>;
 
 namespace apb1rstr_fields
@@ -543,8 +539,7 @@ constexpr auto cecrst = stmcpp::register_field<apb1rstr_register, 30, 1>{1};
 
 constexpr auto apb1rstr = apb1rstr_register{};
 
-
-// 
+//
 using ahbenr_register = stmcpp::register_wrapper<0x40021014, 4, stmcpp::read_write_flag>;
 
 namespace ahbenr_fields
@@ -598,8 +593,7 @@ constexpr auto iopeen = stmcpp::register_field<ahbenr_register, 21, 1>{1};
 
 constexpr auto ahbenr = ahbenr_register{};
 
-
-// 
+//
 using apb2enr_register = stmcpp::register_wrapper<0x40021018, 4, stmcpp::read_write_flag>;
 
 namespace apb2enr_fields
@@ -653,20 +647,14 @@ constexpr auto usart7en = stmcpp::register_field<apb2enr_register, 6, 1>{1};
 
 constexpr auto apb2enr = apb2enr_register{};
 
-
-// 
+//
 using apb1enr_register = stmcpp::register_wrapper<0x4002101c, 4, stmcpp::read_write_flag>;
 
 namespace apb1enr_fields
 {
 
-// 
-constexpr auto tim2en_disabled = stmcpp::register_field<apb1enr_register, 0, 1>{0};
-
-// 
-constexpr auto tim2en_enabled = stmcpp::register_field<apb1enr_register, 0, 1>{1};
-
-using tim2en = stmcpp::register_field<apb1enr_register, 0, 1>;
+//
+constexpr auto tim2en =stmcpp::register_field<apb1enr_register, 0, 1>{1};
 
 
 // 
@@ -729,9 +717,8 @@ constexpr auto cecen = stmcpp::register_field<apb1enr_register, 30, 1>{1};
 
 constexpr auto apb1enr = apb1enr_register{};
 
-
-// 
-using bdcr_register = stmcpp::register_wrapper<0x40021020, 4, readj-write>;
+//
+using bdcr_register = stmcpp::register_wrapper<0x40021020, 4, read_write_flag>;
 
 namespace bdcr_fields
 {
@@ -817,9 +804,8 @@ using bdrst = stmcpp::register_field<bdcr_register, 16, 1>;
 
 constexpr auto bdcr = bdcr_register{};
 
-
-// 
-using csr_register = stmcpp::register_wrapper<0x40021024, 4, readj-write>;
+//
+using csr_register = stmcpp::register_wrapper<0x40021024, 4, read_write_flag>;
 
 namespace csr_fields
 {
@@ -884,8 +870,7 @@ using v18pwrrstf = stmcpp::register_field<csr_register, 23, 1>;
 
 constexpr auto csr = csr_register{};
 
-
-// 
+//
 using ahbrstr_register = stmcpp::register_wrapper<0x40021028, 4, stmcpp::read_write_flag>;
 
 namespace ahbrstr_fields
@@ -921,8 +906,7 @@ constexpr auto ioperst = stmcpp::register_field<ahbrstr_register, 21, 1>{1};
 
 constexpr auto ahbrstr = ahbrstr_register{};
 
-
-// 
+//
 using cfgr2_register = stmcpp::register_wrapper<0x4002102c, 4, stmcpp::read_write_flag>;
 
 namespace cfgr2_fields
@@ -985,8 +969,7 @@ using prediv = stmcpp::register_field<cfgr2_register, 0, 4>;
 
 constexpr auto cfgr2 = cfgr2_register{};
 
-
-// 
+//
 using cfgr3_register = stmcpp::register_wrapper<0x40021030, 4, stmcpp::read_write_flag>;
 
 namespace cfgr3_fields
@@ -1045,9 +1028,8 @@ constexpr auto adcsw = stmcpp::register_field<cfgr3_register, 8, 1>{1};
 
 constexpr auto cfgr3 = cfgr3_register{};
 
-
-// 
-using cr2_register = stmcpp::register_wrapper<0x40021034, 4, readj-write>;
+//
+using cr2_register = stmcpp::register_wrapper<0x40021034, 4, read_write_flag>;
 
 namespace cr2_fields
 {

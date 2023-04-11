@@ -14,6 +14,7 @@ inline void coarse_delay_us(uint32_t time, uint32_t one_ms) {
     __asm__ volatile("nop");
   }
 }
+
 } // namespace utils
 
 } // namespace mcal

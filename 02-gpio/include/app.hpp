@@ -1,36 +1,38 @@
 #pragma once
 
+#include "stm32f051/gpioa.hpp"
+#include "stm32f051/gpiob.hpp"
+#include "stm32f051/gpioc.hpp"
+#include "stm32f051/nvic.hpp"
+#include "stm32f051/rcc.hpp"
+#include "stm32f051/tim2.hpp"
+#include "stm32f051/tim3.hpp"
+
 #include "gpioa.hpp"
 #include "gpiob.hpp"
 #include "gpioc.hpp"
-#include "noise.hpp"
 #include "rcc.hpp"
+
+#include "noise.hpp"
 #include "sseg.hpp"
 #include "utils.hpp"
 
 #include <stm32f051x8.h>
 
-#define BVB_(bit) (1 << (bit))
-
-#define GET_CLOCK_ENR_NUM(word) ((word >> 2U) & 0b11UL)
-
-#define GET_CLOCK_ENR(word) ((volatile uint32_t *)((RCC_BASE) + 0x1C - GET_CLOCK_ENR_NUM(word) * 4))
-
-#define RCC_TIM3_EN BVB_(0x01) | (0x0UL)
-#define RCC_TIM2_EN BVB_(0x00) | (0x0UL)
-#define RCC_CLOCK_ON 0x1UL
-
 ssegm::ss_display seg7;
 noise::noiser nsr;
 
+using namespace stmcpp::stm32f051;
+
 extern "C" void TIM2_IRQHandler(void) {
-  TIM2->SR &= ~TIM_SR_UIF;
+
+  mtim2::sr &= mtim2::sr_fields::uif_clear;
   seg7.set_number_quater();
   seg7.push_display_state();
 }
 
 extern "C" void TIM3_IRQHandler(void) {
-  TIM3->SR &= ~TIM_SR_UIF;
+  mtim3::sr &= mtim3::sr_fields::uif_clear;
   nsr.emit_noise();
 }
 
@@ -40,54 +42,39 @@ class application final {
   static constexpr unsigned cpu_frequency = 48000000U;
   static constexpr unsigned tacts_per_one_us = cpu_frequency / 100000U;
 
-  void rcc_clock_set(uint32_t clock, uint8_t state) {
-    uint32_t volatile *clock_enr = GET_CLOCK_ENR(clock);
-    uint32_t clock_num = GET_CLOCK_ENR_NUM(clock);
-    *clock_enr = (*clock_enr & ~(clock_num << 2U)) | ((state) ? clock & ~(clock_num << 2U) : 0x0UL);
-  }
-
-  void board_clocking_init() {
-    mcal::rcc::cr::hse_clock_enable();
-    mcal::rcc::cfgr2::set_prediv_2();
-    mcal::rcc::cfgr::set_pll_src_hseprediv();
-    mcal::rcc::cfgr::set_pll_mul(12);
-    mcal::rcc::cr::enable_pll();
-    mcal::rcc::cfgr::conf_ahb_48_mhz();
-    mcal::rcc::cfgr::set_sysclk_source(mcal::rcc::cfgr::sysclk::pll);
-    while (mcal::rcc::cfgr::switch_status() != mcal::rcc::cfgr::sysclk::pll) {
-      ;
-    }
-  }
+  void board_clocking_init() { mrcc::cr |= mrcc::cr_fields::hseon; }
 
   void tim2_config() {
     NVIC_SetPriority(TIM2_IRQn, 1);
     NVIC_EnableIRQ(TIM2_IRQn);
-    rcc_clock_set(RCC_TIM2_EN, RCC_CLOCK_ON);
-    TIM2->ARR = SystemCoreClock / 1000 * 5;
-    TIM2->DIER |= TIM_DIER_UIE;
-    TIM2->CR1 |= TIM_CR1_CEN;
+    mrcc::apb1enr |= mrcc::apb1enr_fields::tim2en;
+    mtim2::arr = SystemCoreClock / 1000 * 5;
+    mtim2::dier |= mtim2::dier_fields::uie_enabled;
+    mtim2::cr1 |= mtim2::cr1_fields::cen_enabled;
   }
 
   void tim3_config(int dur) {
     NVIC_SetPriority(TIM3_IRQn, 2);
     NVIC_EnableIRQ(TIM3_IRQn);
-    rcc_clock_set(RCC_TIM3_EN, RCC_CLOCK_ON);
-    TIM3->ARR = SystemCoreClock / 10 / dur;
-    TIM3->DIER |= TIM_DIER_UIE;
-    TIM3->CR1 |= TIM_CR1_CEN;
+    mrcc::apb1enr |= mrcc::apb1enr_fields::tim3en;
+    mtim3::arr = SystemCoreClock / dur;
+    mtim3::dier |= mtim3::dier_fields::uie_enabled;
+    mtim3::cr1 |= mtim3::cr1_fields::cen_enabled;
   }
 
+  void tim2_set_duration(int dur) { mtim2::arr = SystemCoreClock / dur; }
+
+  void tim3_set_duration(int dur) { mtim3::arr = SystemCoreClock / dur; }
+
   void board_gpio_init() {
-    mcal::rcc::ahbenr::conf_a_output();
-    mcal::rcc::ahbenr::conf_b_output();
-    mcal::gpioa::moder::conf_general_purpose_output();
-    mcal::gpiob::moder::conf_general_purpose_output();
-    mcal::gpioa::typer::conf_push_pull();
-    mcal::gpiob::typer::conf_push_pull();
-    *mcal::gpioa::moder::addr() |= 0U;
-    *mcal::gpiob::moder::addr() |= 0U;
-    mcal::gpioa::pupdr::conf_pull_down();
-    mcal::gpiob::pupdr::conf_pull_down();
+    mrcc::ahbenr |= mrcc::ahbenr_fields::iopaen;
+    mrcc::ahbenr |= mrcc::ahbenr_fields::iopben;
+    mgpioa::configure_gen_purpose_output();
+    mgpiob::configure_gen_purpose_output();
+    mgpioa::otyper |= mgpioa::otyper_fields::ot0_pushpull;
+    mgpiob::otyper |= mgpiob::otyper_fields::ot0_pushpull;
+    mgpioa::pupdr |= mgpioa::pupdr_fields::pupdr0_pulldown;
+    mgpiob::pupdr |= mgpiob::pupdr_fields::pupdr0_pulldown;
   }
 
   void delay_ms(uint32_t time) {
@@ -103,13 +90,13 @@ public:
   void run_loop() {
     board_clocking_init();
     tim2_config();
-    tim3_config(1000);
+    tim3_config(100);
     board_gpio_init();
     for (unsigned tick = 0;; ++tick) {
       if (seg7.number < 9999) ++seg7.number;
       seg7.set_number_quater();
-      if (tick % 10) tim3_config(tick);
-      delay_ms(1000);
+      if (tick % 10) tim3_set_duration(tick * 10);
+      delay_ms(100);
     }
   }
 };
