@@ -123,7 +123,6 @@ public:
     tim2_config(SystemCoreClock / 1000 * 5);
     tim3_config(SystemCoreClock / 1000 * 5);
     tim14_config(SystemCoreClock / 300);
-    // tim14_set_duration(10000);
     board_gpio_init();
     seg7.number = curr;
     for (;;) {

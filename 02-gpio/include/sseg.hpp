@@ -1,6 +1,7 @@
 #pragma once
 
-#include "gpioa.hpp"
+#include "stm32f051/gpioa.hpp"
+
 #include <stdint.h>
 
 namespace ssegm {
@@ -68,9 +69,10 @@ public:
   }
 
   void push_display_state() {
-    auto prev_state = ~pins_used & *mcal::gpioa::odr::addr();
+    using namespace stmcpp::stm32f051;
+    auto prev_state = ~pins_used & mgpioa::odr_register{}.get();
     auto to_write = pins_used & (display | positions[quarter]);
-    *mcal::gpioa::odr::addr() = prev_state | to_write;
+    mgpioa::odr_register{}.set(prev_state | to_write);
     quarter = (quarter + 1) % 4;
   }
 };
