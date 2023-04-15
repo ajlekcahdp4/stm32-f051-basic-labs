@@ -5,7 +5,6 @@
 
 namespace app_blink {
 
-using namespace stmcpp::stm32f051;
 
 class application final {
   static constexpr unsigned cpu_frequency = 48000000U;

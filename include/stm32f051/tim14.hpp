@@ -289,8 +289,7 @@ namespace or_fields
 
 } // namespace or_fields
 
-constexpr auto or = or_register{};
-
+constexpr auto or_reg = or_register{};
 
 // 
 using ccr1_register = stmcpp::register_wrapper<0x40002034, 4, stmcpp::read_write_flag>;
