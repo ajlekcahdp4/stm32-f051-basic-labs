@@ -15,6 +15,8 @@
 namespace stmcpp::stm32f051::mtim3
 {
 
+constexpr auto nvic_bit = 1 << 16;
+
 // 
 using cr1_register = stmcpp::register_wrapper<0x40000400, 4, stmcpp::read_write_flag>;
 

@@ -14,6 +14,7 @@
 
 namespace stmcpp::stm32f051::mtim14
 {
+constexpr auto nvic_bit = 1 << 19;
 
 // 
 using cr1_register = stmcpp::register_wrapper<0x40002000, 4, stmcpp::read_write_flag>;

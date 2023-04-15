@@ -50,8 +50,10 @@ class application final {
   void board_clocking_init() { mrcc::cr |= mrcc::cr_fields::hseon; }
 
   void tim2_config(unsigned dur) {
+
     NVIC_SetPriority(TIM2_IRQn, 1);
-    NVIC_EnableIRQ(TIM2_IRQn);
+    mnvic::iser_register{}.set(mtim2::nvic_bit);
+    // NVIC_EnableIRQ(TIM2_IRQn);
     mrcc::apb1enr |= mrcc::apb1enr_fields::tim2en;
     mtim2::arr = dur;
     mtim2::dier |= mtim2::dier_fields::uie_enabled;
@@ -60,7 +62,7 @@ class application final {
 
   void tim3_config(unsigned dur) {
     NVIC_SetPriority(TIM3_IRQn, 2);
-    NVIC_EnableIRQ(TIM3_IRQn);
+    mnvic::iser_register{}.set(mtim3::nvic_bit);
     mrcc::apb1enr |= mrcc::apb1enr_fields::tim3en;
     mtim3::arr = dur;
     mtim3::dier |= mtim3::dier_fields::uie_enabled;
@@ -68,8 +70,8 @@ class application final {
   }
 
   void tim14_config(unsigned dur) {
-    NVIC_SetPriority(TIM14_IRQn, 1);
-    NVIC_EnableIRQ(TIM14_IRQn);
+    NVIC_SetPriority(TIM14_IRQn, 3);
+    mnvic::iser_register{}.set(mtim14::nvic_bit);
     mrcc::apb1enr |= mrcc::apb1enr_fields::tim14en;
     mtim14::arr = dur;
     mtim14::dier |= mtim14::dier_fields::uie_enabled;
