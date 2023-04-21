@@ -259,6 +259,23 @@ using idr0 = stmcpp::register_field<idr_register, 0, 1>;
 
 constexpr auto idr = idr_register{};
 
+inline void configure_gen_purpose_input() {
+  moder |= (moder_fields::moder0_input << (idr_fields::idr1.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr2.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr3.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr4.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr5.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr6.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr7.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr8.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr9.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr10.offset * 2)) |
+      (moder_fields::moder0_input << (idr_fields::idr11.offset * 2)) |
+      (moder_fields::moder0_input << idr_fields::idr12.offset * 2) |
+      (moder_fields::moder0_input << idr_fields::idr13.offset * 2) |
+      (moder_fields::moder0_input << idr_fields::idr14.offset * 2) |
+      (moder_fields::moder0_input << idr_fields::idr15.offset * 2);
+}
 
 // 
 using odr_register = stmcpp::register_wrapper<0x48000414, 4, stmcpp::read_write_flag>;
