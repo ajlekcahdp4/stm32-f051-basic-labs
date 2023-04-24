@@ -35,6 +35,19 @@ void enable_output() {
   mgpiob::odr_register{}.set(to_write | suround_state);
 }
 
+constexpr auto led_pins =
+    mgpiob::odr_fields::odr10.mask | mgpiob::odr_fields::odr1.mask | mgpiob::odr_fields::odr2.mask;
+void enable_all_leds() {
+  auto suround_state = ~led_pins & mgpiob::odr_register{}.get();
+  auto to_write = led_pins;
+  mgpiob::odr_register{}.set(to_write | suround_state);
+}
+
+void disable_all_leds() {
+  auto suround_state = ~led_pins & mgpiob::odr_register{}.get();
+  mgpiob::odr_register{}.set(suround_state);
+}
+
 void disable_output() {
   auto suround_state = ~mgpiob::odr_fields::odr3.mask & mgpiob::odr_register{}.get();
   mgpiob::odr_register{}.set(suround_state);
@@ -53,8 +66,8 @@ int main() {
   gpiob_init();
 
   for (;;) {
-    if (get_input()) enable_output();
-    else disable_output();
-    delay_ms(100);
+    if (get_input()) enable_all_leds();
+    else disable_all_leds();
+    delay_ms(5);
   }
 }

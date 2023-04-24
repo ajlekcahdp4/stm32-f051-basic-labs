@@ -53,7 +53,6 @@ class application final {
 
     NVIC_SetPriority(TIM2_IRQn, 1);
     mnvic::iser_register{}.set(mtim2::nvic_bit);
-    // NVIC_EnableIRQ(TIM2_IRQn);
     mrcc::apb1enr |= mrcc::apb1enr_fields::tim2en;
     mtim2::arr = dur;
     mtim2::dier |= mtim2::dier_fields::uie_enabled;
