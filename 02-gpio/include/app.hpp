@@ -50,7 +50,6 @@ class application final {
   void board_clocking_init() { mrcc::cr |= mrcc::cr_fields::hseon; }
 
   void tim2_config(unsigned dur) {
-
     NVIC_SetPriority(TIM2_IRQn, 1);
     mnvic::iser_register{}.set(mtim2::nvic_bit);
     mrcc::apb1enr |= mrcc::apb1enr_fields::tim2en;
